@@ -17,8 +17,9 @@ def run_sentiment():
 
     # Connect to data warehouse
     try:
-        conn2 = psycopg2.connect(
-            "host=dwcredentials["host"] dbname=dwcredentials["dbname"] user=dwcredentials["user"] password=dwcredentials["pw"]")
+        from connect2 import dw_credentials
+
+        con2 = dw_credentials()
 
     except psycopg2.Error as e:
         print("Error: Could not make connection to the Postgres database")
@@ -46,8 +47,9 @@ def run_sentiment():
 
     # Connect to RDS in data lake
     try:
-        conn = psycopg2.connect(
-            "host=dlcredentials["host"] dbname=dlcredentials["dbname"] user=dlcredentials["user"] password=dlcredentials["pw"]")
+        from connect1 import dl_credentials
+
+        con = dl_credentials()
 
     except psycopg2.Error as e:
         print("Error: Could not make connection to the Postgres database")
