@@ -4,7 +4,7 @@
 # Connect to data lake
 from connect2 import dw_credentials
 
-con2 = database_credentials()
+con2 = dw_credentials()
 
 except psycopg2.Error as e:
     print("Error: Could not make connection to the Postgres database")
@@ -55,16 +55,3 @@ for row in sentiments:
 
     cur2.execute("""INSERT into sentiment_agr(capital, count_tweets, POS, NEG, NEU, positivity_score, sentiment)
                              VALUES (%s, %s, %s, %s, %s, %s, %s)""", row)
-
-
-postgreSQL_select_Query = "select * from sentiment_agr"
-cur2.execute(postgreSQL_select_Query)
-tweets = cur2.fetchall()
-for row in tweets:
-    print(row)
-count_rows = """ SELECT COUNT (*) FROM sentiment_agr;"""
-cur2.execute(count_rows)
-table_count = cur2.fetchone()
-print(table_count)
-    dropTableStmt = "DROP TABLE %s;" % "sentiment_agr";
-    cur2.execute(dropTableStmt)
