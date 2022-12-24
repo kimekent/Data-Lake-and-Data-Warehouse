@@ -2,9 +2,9 @@
 # It creates a table that only contains the necessary and aggregated date for the visualisation in Tableau
 
 # Connect to data lake
-try:
-    conn2 = psycopg2.connect(
-        "host=dwcredentials["host"] dbname=dwcredentials["dbname"] user=dwcredentials["user"] password=dwcredentials["pw"]")
+from connect2 import dw_credentials
+
+con2 = database_credentials()
 
 except psycopg2.Error as e:
     print("Error: Could not make connection to the Postgres database")
