@@ -14,7 +14,10 @@ def run_get_tweets():
 
     # Connect to RDS in data lake and create twitter table
     try:
-        conn = psycopg2.connect("host=dlcredentials["host"] dbname=dlcredentials["dbname"] user=dlcredentials["user"] password=dlcredentials["pw"]")
+        from connect1 import dl_credentials
+
+        con = dl_credentials()
+
 
     except psycopg2.Error as e:
         print("Error: Could not make connection to the Postgres database")
