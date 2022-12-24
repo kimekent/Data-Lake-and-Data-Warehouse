@@ -4,7 +4,7 @@
 # Connect to data lake
 try:
     conn2 = psycopg2.connect(
-        "host=sgdl1.cjf3sww93fr9.us-east-1.rds.amazonaws.com dbname=sgdl1 user=postgres password=1578SMDL")
+        "host=dwcredentials["host"] dbname=dwcredentials["dbname"] user=dwcredentials["user"] password=dwcredentials["pw"]")
 
 except psycopg2.Error as e:
     print("Error: Could not make connection to the Postgres database")
