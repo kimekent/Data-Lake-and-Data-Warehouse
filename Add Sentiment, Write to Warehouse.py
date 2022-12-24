@@ -18,7 +18,7 @@ def run_sentiment():
     # Connect to data warehouse
     try:
         conn2 = psycopg2.connect(
-            "host=sgdl1.cjf3sww93fr9.us-east-1.rds.amazonaws.com dbname=sgdl1 user=postgres password=1578SMDL")
+            "host=dwcredentials["host"] dbname=dwcredentials["dbname"] user=dwcredentials["user"] password=dwcredentials["pw"]")
 
     except psycopg2.Error as e:
         print("Error: Could not make connection to the Postgres database")
@@ -47,7 +47,7 @@ def run_sentiment():
     # Connect to RDS in data lake
     try:
         conn = psycopg2.connect(
-            "host=kimstestdb.cujm2drdr40t.us-east-1.rds.amazonaws.com dbname=kimstestdb user=postgres password=315096KEK")
+            "host=dlcredentials["host"] dbname=dlcredentials["dbname"] user=dlcredentials["user"] password=dlcredentials["pw"]")
 
     except psycopg2.Error as e:
         print("Error: Could not make connection to the Postgres database")
@@ -66,110 +66,30 @@ def run_sentiment():
     cur.execute(get_tweets_today)
     tweets_today = cur.fetchall()
 
-    # Iterate through the list of tweets from today and check if tweet is already in cleaned table in the data warehouse
+    # Iterate through the list of tweets from today and
+    # check if tweet is already in cleaned table in the data warehouse
     # If yes, skip
     # If no, add it to the tweets table in the data warehouse and add sentiment
     for tweet in tweets_today:
         if tweet[1] in id_list:
             pass
-        # Conduct sentiment analysis
         else:
-            print("starting sentiment analysis")
+            # Conduct sentiment analysis
             text = (tweet[0])  # in each row only get the tweet text
-
-            encoded_text = tokenizer(text, return_tensors='pt')
-
-            output = model(**encoded_text)
-
-            scores = output[0][0].detach().numpy()
-            scores = softmax(scores)
-
-            scores_dict = {
+            encoded_text = tokenizer(text, return_tensors='pt') # encoding text
+            output = model(**encoded_text) # returns a tensor
+            scores = output[0][0].detach().numpy() # transform to numpy for softmax transformation
+            scores = softmax(scores) # apply softmax for better interpretability
+            scores_dict = {                 # scores are stored in dictionary
                 'neg': scores[0],
                 'neu': scores[1],
                 'pos': scores[2]
             }
-            # print(scores_dict)
-
             sentiment = max(scores_dict, key=scores_dict.get)
-
-
             r = (tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5],
-                 sentiment)  # create a tuple out of each row and sentiment
+                 sentiment)  # create a tuple out of each tweet and sentiment
 
 
             cur2.execute(
                 """INSERT into tweets (text, id_tweet, lang, geo, capital, date, sentiment)
                  VALUES (%s, %s, %s, %s, %s, %s, %s)""", r)
-
-        attempts = 0
-        success = False
-        while attempts < 3 and not success:
-
-            try:
-                if tweet[1] in id_list:
-                    pass
-                else:
-                    print("starting sentiment analysis")
-                    text = (tweet[0])  # in each row only get the tweet text
-
-                    encoded_text = tokenizer(text, return_tensors='pt')
-
-                    output = model(**encoded_text)
-
-                    scores = output[0][0].detach().numpy()
-                    scores = softmax(scores)
-
-                    scores_dict = {
-                        'neg': scores[0],
-                        'neu': scores[1],
-                        'pos': scores[2]
-                    }
-                    # print(scores_dict)
-
-                    sentiment = max(scores_dict, key=scores_dict.get)
-                    print("got sentiment")
-
-                    r = (tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5],
-                         sentiment)  # create a tuple out of each row and sentiment
-
-
-                    print("got r" + str(r))
-                    cur2.execute(
-                        """INSERT into tweets (text, id_tweet, lang, geo, capital, date, sentiment)
-                         VALUES (%s, %s, %s, %s, %s, %s, %s)""", r)
-                    print(str(r))
-                    success = True
-
-            except:
-                try:
-                    conn2 = psycopg2.connect(
-                        "host=sgdl1.cjf3sww93fr9.us-east-1.rds.amazonaws.com dbname=sgdl1 user=postgres password=1578SMDL")
-                except psycopg2.Error as e:
-                    print("Error: Could not make connection to the Postgres database")
-                    print(e)
-
-                try:
-                    conn = psycopg2.connect(
-                        "host=kimstestdb.cujm2drdr40t.us-east-1.rds.amazonaws.com dbname=kimstestdb user=postgres password=315096KEK")
-
-                except psycopg2.Error as e:
-                    print("Error: Could not make connection to the Postgres database")
-                    print(e)
-                cur = conn2.cursor()
-                conn.set_session(autocommit=True)
-
-                cur2 = conn2.cursor()
-                conn2.set_session(autocommit=True)
-                attempts += 1
-                print("number of attempts:" + str(attempts))
-                if attempts == 3:
-                    print("had to break")
-                    break
-
-
-    postgreSQL_select_Query = "select * from tweets"
-    cur2.execute(postgreSQL_select_Query)
-    tweets = cur2.fetchall()
-    for row in tweets:
-        print(row)
