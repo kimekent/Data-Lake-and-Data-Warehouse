@@ -1,20 +1,22 @@
 This repository contains the following files: 
 
-Twitter Scripts: 
+Twitter Files: 
 
-get_tweets_apache.py: Run by the tweets dag
+get_tweets_apache.py: Run by the tweets dag. This python script gets the tweets.
 
-Add Sentiment, Write to Ware House.py: Run by the sentiment dag
+Add Sentiment, Write to Ware House.py: Run by the sentiment dag. This python script does conducts the duplicate check and sentiment analysis and writes the non duplicate tweets with their sentiment to the data warehouse. 
 
-average.py: Run by the tableau dag
+average.py: Run by the average dag. This python script creates an aggregated table by city  out of the tweets table in the data warehouse.
 
-twitter_dag.py:  Script that runs the "get_tweets_apache.py" script
+twitter_dag.py:  Script that runs the "get_tweets_apache.py" script.
 
-sentiment_dagt.py: Script that runs the "Add Sentiment, Write to Ware House.py" script
+sentiment_dagt.py: Script that runs the "Add Sentiment, Write to Ware House.py" script.
 
-
-
-Weather Scripts
+average_dag.py: Script that runs the "average.py" script.
 
 
-Cost Scripts
+
+Weather Files
+
+
+Cost Files
