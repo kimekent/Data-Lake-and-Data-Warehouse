@@ -16,7 +16,13 @@ average_dag.py: Script that runs the "average.py" script.
 
 
 
-Weather Files
+Weather Files: 
+
+weather_dag.py: combining the two python scripts below to execute them sequentially. 
+
+get_weather_apache.py: Contains the code to create a table within the data lake and fetch the weather data to store in a table
+
+send_to_dwh_apache: Containing the code to create a table in the data warehouse and extract data frome the data lake to move it to the warehouse. 
 
 
 Cost Files
