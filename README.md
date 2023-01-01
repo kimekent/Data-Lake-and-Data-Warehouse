@@ -25,8 +25,10 @@ get_weather_apache.py: Contains the code to create a table within the data lake 
 send_to_dwh_apache: Containing the code to create a table in the data warehouse and extract data frome the data lake to move it to the warehouse. 
 
 
-Cost Files
+Cost Files:
+
 scrape_Script_clp.py: scrapes each city and country and for each one it creates one file. E.g. Brussels_Belgium.json, etc.
 scrape_all_in_one.py: scrapes each city and country but saves all responses in one json file. E.g. scrape_costlivingprice.json
+
 lambda_function_s3_to_rds.py: imports/inserts the "cost_living_prices_europe_cleanV2.csv" from the s3bucket into the data warehouse
 Connect_to_dw.ipynb: connects to data warehouse and prints the header of "costlivingprices" table
