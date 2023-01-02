@@ -24,8 +24,13 @@ def get_weather():
 
     conn.set_session(autocommit=True)
 
+#check exising tables in data lake
+    cur.execute("""SELECT table_name FROM information_schema.tables
+           WHERE table_schema = 'public'""")
+    for table in cur.fetchall():
+        print(table)
 
-#Delete existing table
+#Delete existing weather table
     try:
         cur = conn.cursor()
     except psycopg2.Error as e:
@@ -39,7 +44,7 @@ def get_weather():
     cur.execute("CREATE TABLE IF NOT EXISTS WeatherForecast (address varchar(3000), date DATE,"
                 "maxt numeric(30), mint numeric(30), temp numeric(30),    "
                "humidity numeric(30), conditions varchar(30), wdir numeric(100), windspeed numeric(30),"
-                "windchill numeric(30), cloudcover numeric(30));")
+                "windchill numeric(30), cloudcover numeric(30), precipitation numeric(30) );")
 
 #Get names of cities we want to find weather data for in the table capitals
     city_name = []
@@ -50,16 +55,11 @@ def get_weather():
         city_name.append(i)
     print(city_name)
 
-    cur.execute("""SELECT table_name FROM information_schema.tables
-           WHERE table_schema = 'public'""")
-    for table in cur.fetchall():
-        print("---Existing tables---")
-        print(table)
-
+   
 #connect to API and iterate through city_names
 #Credentials
     host = "visual-crossing-weather.p.rapidapi.com"
-    key = "b456ae568dmshc70618f5fee40d1p16fef3jsn076b637574a9"
+    key = "b456ae568dmshc70618f5fee40d1p16fef3jsn076b637574a9" #this doesn't occur in Airflow Webbrowser
 
 
     for city in city_name:
@@ -101,18 +101,18 @@ def get_weather():
                     windspeed = json_response['locations'][city].get('values')[i].get('wspd')
                     windchill = json_response['locations'][city].get('values')[i].get('windchill')
                     cloudcover = json_response['locations'][city].get('values')[i].get('cloudcover')
+                    precipitation = json_response['locations'][city].get('values')[i].get('precip')
 
                     #printing most important results
                     print('date:'+ date)
                     print('city:' + str(address))
                     print("Max Temperature: " + str(maxTemp))
-                    print('Humidity: ' + str(humidity))
                     print('Condition: '+ str(condition))
 
                 #insert the parameters into the DataLake
                 try:
-                    cur.execute("INSERT INTO WeatherForecast (address,date,maxt,mint,temp,humidity,conditions,wdir, windspeed, windchill, cloudcover) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-                            (address,date,maxTemp,minTemp,meanTemp,humidity,condition,winddirection,windspeed,windchill, cloudcover))
+                    cur.execute("INSERT INTO WeatherForecast (address,date,maxt,mint,temp,humidity,conditions,wdir, windspeed, windchill, cloudcover, precipitation) VALUES (%s, %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                            (address,date,maxTemp,minTemp,meanTemp,humidity,condition,winddirection,windspeed,windchill, cloudcover, precipitation))
                     print("success")
                 except:
                     print("Error in insert")
