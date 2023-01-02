@@ -1,6 +1,6 @@
 This repository contains the following files: 
 
-Twitter Files: 
+Twitter_Files: 
 
 get_tweets_apache.py: Run by the tweets dag. This python script gets the tweets.
 
@@ -16,7 +16,7 @@ average_dag.py: Script that runs the "average.py" script.
 
 
 
-Weather Files: 
+Weather_Files: 
 
 weather_dag.py: combining the two python scripts below to execute them sequentially. 
 
