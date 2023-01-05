@@ -4,16 +4,19 @@
 import requests
 import psycopg2
 import json
+import credentials
 
 
 def get_weather():
 
-    #Connect to Datalake (RDS)
+    #Connect to Datalake (RDS) using hidden credentials
     try:
-        conn = psycopg2.connect("host=kimstestdb.cujm2drdr40t.us-east-1.rds.amazonaws.com dbname=kimstestdb user=postgres password=315096KEK")
+        from credentials import dl_credentials
+        
+        conn = dl_credentials()
 
     except psycopg2.Error as e:
-        print("Error: Could not make connection to the Postgres database")
+        print("Error: Could not make connection to Datalake")
         print(e)
 
     try:
@@ -59,7 +62,7 @@ def get_weather():
 #connect to API and iterate through city_names
 #Credentials
     host = "visual-crossing-weather.p.rapidapi.com"
-    key = "b456ae568dmshc70618f5fee40d1p16fef3jsn076b637574a9" #this doesn't occur in Airflow Webbrowser
+    key = "b456ae568dmshc70618f5fee40d1p16fef3jsn076b637574a9" #this doesn't appear in Airflow Webbrowser
 
 
     for city in city_name:
