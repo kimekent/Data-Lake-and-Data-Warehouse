@@ -4,8 +4,10 @@ def load_dwh():
     
 #Connect to Data Lake
     try:
-        conn = psycopg2.connect("host=kimstestdb.cujm2drdr40t.us-east-1.rds.amazonaws.com dbname=kimstestdb user=postgres password=315096KEK")
-
+        from credentials import dl_credentials
+        
+        conn = dl_credentials()
+             
     except psycopg2.Error as e:
         print("Error: Could not make connection to the Postgres datalake")
         print(e)
@@ -19,7 +21,10 @@ def load_dwh():
 
 #Connect to Data Warehouse
     try:
-        conn2 = psycopg2.connect("host=sgdl1.cjf3sww93fr9.us-east-1.rds.amazonaws.com dbname=sgdl1 user=postgres password=1578SMDL")
+        
+        from credentials import dwh_credentials
+        
+        conn2 = dwh_credentials()
 
     except psycopg2.Error as e:
         print("Error: Could not make connection to the Postgres database")
@@ -44,7 +49,7 @@ def load_dwh():
     cur2.execute("DROP TABLE IF EXISTS SimpleWeatherForecast;""")
 
 
-#create table in DWH with only the most important parameters (city, datetime, maxtemp, conditions)
+#create table in DWH with only the most important parameters (city, datetime, maxtemp, conditions, precipitation)
     cur2.execute("CREATE TABLE IF NOT EXISTS SimpleWeatherForecast (city varchar(3000), date DATE,"
                 "maxt numeric(30), mint numeric(30),"
                "conditions varchar(30), cloudcover numeric(30), precipitation numeric(30));")
