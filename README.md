@@ -4,7 +4,7 @@ This repository contains the following files:
 
 - get_tweets_apache.py: Run by the tweets dag. This python script gets the tweets.
 
-- Add Sentiment, Write to Ware House.py: Run by the sentiment dag. This python script does conducts the duplicate check and sentiment analysis and writes the non duplicate tweets with their sentiment to the data warehouse. 
+- Add Sentiment, Write to Ware House.py: Run by the sentiment dag. This python script conducts the duplicate check and sentiment analysis and writes the non duplicate tweets with their sentiment to the data warehouse. 
 
 - average.py: Run by the average dag. This python script creates an aggregated table by city  out of the tweets table in the data warehouse.
 
